@@ -1,50 +1,46 @@
 import { StyleSheet, Text, View, ScrollView } from 'react-native'
-import React,  { useState }  from 'react'
+import React,  { useState, useRef }  from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
-import CustomButton from '../../components/CustomButton';
-import Input from '../../components/Input';
+import CustomButton from '../../../components/CustomButton';
 import { useNavigation } from '@react-navigation/native';
-import { register, sendMessage } from '../../backend/appwrite';
-// import PhoneInput from 'react-native-phone-input';
-// import CountryPicker from 'react-native-country-picker-modal';
+import { register, sendMessage } from '../../../backend/appwrite';
+import PhoneInput from 'react-native-phone-input'
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function PhoneNumber({ route }) {
-  const { email, password, name, surname, firstname, gender, birthdate} = route.params;
+ const { email, password, name, surname, firstname, gender, birthdate} = route.params;
 
     const navigation = useNavigation();
-
+    const phoneRef = useRef(null);
     const [phone, setPhone] = useState("");
     const [phoneIsInvalid, setPhoneIsInvalid] = useState(false);
-    const [phoneTexterror, setPhoneTexterror] = useState("");
-    
-    function checkInfos(){
-        let canSubmit = true;
-        if (phone === "") {
-          setPhoneIsInvalid(true);
-          setPhoneTexterror("Ce champ est obligatoire*");
-          canSubmit = false;
-        }else if(phone.length <= 9){
-          setPhoneIsInvalid(true);
-          setPhoneTexterror("Le numéro de téléphone entré est invalide!");
-          canSubmit = false;
-        }else{
-            setPhoneIsInvalid(false);
-            canSubmit = true;
-        }
+    const [phoneTexterror, setPhoneTexterror] = useState();
 
-        return canSubmit;
-    }
     async function submit() {
         const canSubmit = checkInfos();
         if(canSubmit){
             try {
                const user = await register(email,password,name,surname,firstname,gender,birthdate,phone);
-                await sendMessage(phone);
-                navigation.navigate('Otpentry', { phone: phone })
+                // await sendMessage(phone);
+                 AsyncStorage.setItem('isUsedBefore', JSON.stringify(true));
+                // AsyncStorage.setItem('isLoggedIn', JSON.stringify(true));
+                navigation.navigate('Homepage')
             } catch (error) {
-                console.log(error)
+                console.log(error.message)
             }
         }
+    };
+   function checkInfos() {
+    if (phoneRef.current && phoneRef.current.isValidNumber()) {
+      setPhone(phoneRef.current.getValue());
+      setPhoneIsInvalid(false);
+      setPhoneTexterror(false)
+      return true;
+     }else{
+      setPhoneIsInvalid(true);
+      setPhoneTexterror(true)
+      return false;
+     }
     }
   return (
     <SafeAreaView className="py-6 px-4 h-full flex-1">
@@ -59,20 +55,27 @@ export default function PhoneNumber({ route }) {
        </View>
        <View className=" my-2 mt-9 mb-auto  h-full w-full flex">
            <Text className="font-bold text-left mb-4 text-[18px]">
-               Vérification OTP  
+               Vérification OTP
            </Text>
            <View className="flex flex-col  h-[80%]">
-           <View className="">
-               <Input
-                   label="Téléphone"
-                   className="w-full border"
-                   value={phone}
-                    onUpdateValue={(e) => setPhone(e)}
-                   keyboardType="phone-pad"
-                   placeholder={'Entrez votre numéro de téléphone'}
-                   isInvalid={phoneIsInvalid}
-                   ErrorText={phoneTexterror}
-                   />
+           <View className="flex" style={styles.inputContainer} >
+           <Text style={[styles.label, phoneTexterror && styles.labelInvalid]}>
+              Téléphone : 
+            </Text>
+           <PhoneInput 
+            ref={phoneRef}
+          className='border h-13 w-full '
+          onChangePhoneNumber={checkInfos}
+          style={[styles.input, phoneIsInvalid && styles.inputInvalid]}
+             textStyle={{ fontSize: 16,}}
+              allowZeroAfterCountryCode={false}
+              autoFormat={'AreaCode'}
+              initialCountry='cd'
+              initialValue='243'
+              textProps={{
+                placeholder: 'Enter a phone number...'
+            }}
+              />
            </View>
             <CustomButton
                title="Vérifier"
@@ -87,4 +90,27 @@ export default function PhoneNumber({ route }) {
   )
 }
 
-const styles = StyleSheet.create({})
+const styles = StyleSheet.create({
+  inputContainer: {
+    marginVertical: 8,
+  },
+  label: {
+    color: '#1E1E1E',
+    fontWeight: 'bold',
+    marginBottom: 4,
+  },
+  labelInvalid: {
+    color: 'red',
+  },
+  input: {
+    paddingVertical: 14,
+    paddingHorizontal: 6,
+    borderRadius: 8,
+    fontSize: 16,
+    width: '100%',
+    borderColor: '#6DB9EF',
+  },
+  inputInvalid: {
+    borderColor: "red",
+  },
+})

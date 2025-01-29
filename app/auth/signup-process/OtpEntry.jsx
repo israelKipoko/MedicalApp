@@ -1,8 +1,8 @@
 import { StyleSheet, Text, View, ScrollView } from 'react-native'
 import React from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
-import CustomButton from '../../components/CustomButton';
-import FlatButton from '../../components/FlatButton';
+import CustomButton from '../../../components/CustomButton';
+import FlatButton from '../../../components/FlatButton';
 import { useNavigation } from '@react-navigation/native'
 import { OtpInput  } from 'react-native-otp-entry';
 

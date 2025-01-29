@@ -6,6 +6,7 @@
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
+    "newArchEnabled": true,
     "splash": {
       "image": "./assets/splash.png",
       "resizeMode": "contain",
@@ -13,21 +14,41 @@
     },
     "ios": {
       "supportsTablet": true,
-      "package": "com.MedicalApp.app"
+      "package": "com.MedicalApp.app",
+      "config": {
+        "googleMapsApiKey": "AIzaSyAC8NH9Qk5cV-bwBDRWFCMmpNhZA1X4Rsk"
+      }
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.MedicalApp.app"
+      "package": "com.MedicalApp.app",
+      "config": {
+        "googleMaps": {
+          "apiKey": "AIzaSyAC8NH9Qk5cV-bwBDRWFCMmpNhZA1X4Rsk"
+        }
+      }
     },
     "web": {
       "favicon": "./assets/favicon.png"
     },
     "plugins": [
       "react-native-video",
-      "expo-dev-client"
+      "expo-dev-client",
+      [
+      "expo-location",
+      {
+        "locationAlwaysAndWhenInUsePermission": "Allow $(PRODUCT_NAME) to use your location."
+      }
+    ],
+    [
+      "expo-image-picker",
+      {
+        "photosPermission": "The app accesses your photos to let you share them with your friends."
+      }
+    ]
     ]
   }
 }

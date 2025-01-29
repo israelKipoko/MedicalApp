@@ -1,7 +1,9 @@
+import React from 'react';
 import { View, Text, TextInput, StyleSheet } from 'react-native';
 
 function Input({
   label,
+  inputStyle,
   keyboardType,
   secure,
   onUpdateValue,
@@ -10,19 +12,21 @@ function Input({
   isInvalid,
   ErrorText,
   placeholder,
-  pressIn
+  pressIn,
+  readOnly
 }) {
   return (
-    <View style={styles.inputContainer} className='w-[300px] w-full'> 
+    <View style={styles.inputContainer} className='w-[300px] w-full '> 
       <Text style={[styles.label, isInvalid && styles.labelInvalid]}>
         {label} :
       </Text>
       <TextInput
-        className='border h-14 w-full '
+        className={`border h-13 w-full  bg-white ${inputStyle}`}
         style={[styles.input, isInvalid && styles.inputInvalid]}
-        autoCapitalize={false}
         keyboardType={keyboardType}
         secureTextEntry={secure}
+        autoComplete='off'
+        readOnly={readOnly}
         onChangeText={onUpdateValue}
         value={value}
         placeholder={placeholder}
@@ -55,7 +59,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 6,
     borderRadius: 8,
     fontSize: 16,
-    width: '100%',
     borderColor: '#6DB9EF',
   },
   inputInvalid: {
