@@ -17,7 +17,8 @@
       "package": "com.MedicalApp.app",
       "config": {
         "googleMapsApiKey": "AIzaSyAC8NH9Qk5cV-bwBDRWFCMmpNhZA1X4Rsk"
-      }
+      },
+      "bundleIdentifier": "com.MedicalApp.app"
     },
     "android": {
       "adaptiveIcon": {
@@ -29,7 +30,12 @@
         "googleMaps": {
           "apiKey": "AIzaSyAC8NH9Qk5cV-bwBDRWFCMmpNhZA1X4Rsk"
         }
-      }
+      },
+      "permissions": [
+        "android.permission.ACCESS_COARSE_LOCATION",
+        "android.permission.ACCESS_FINE_LOCATION",
+        "android.permission.RECORD_AUDIO"
+      ]
     },
     "web": {
       "favicon": "./assets/favicon.png"
@@ -38,17 +44,17 @@
       "react-native-video",
       "expo-dev-client",
       [
-      "expo-location",
-      {
-        "locationAlwaysAndWhenInUsePermission": "Allow $(PRODUCT_NAME) to use your location."
-      }
-    ],
-    [
-      "expo-image-picker",
-      {
-        "photosPermission": "The app accesses your photos to let you share them with your friends."
-      }
-    ]
+        "expo-location",
+        {
+          "locationAlwaysAndWhenInUsePermission": "Allow $(PRODUCT_NAME) to use your location."
+        }
+      ],
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "The app accesses your photos to let you share them with your friends."
+        }
+      ]
     ]
   }
 }
