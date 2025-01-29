@@ -5,7 +5,7 @@ import Credentials from './signup-process/Crendentials';
 export default function Signup() {
   return (
     <>
-  <StatusBar backgroundColor="#161622" style="light" />
+  <StatusBar  style="dark" />
     <Credentials />
   </>
    

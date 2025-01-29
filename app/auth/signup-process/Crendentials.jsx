@@ -1,9 +1,9 @@
 import { StyleSheet, Text, View, ScrollView } from 'react-native'
 import React, {useState} from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
-import CustomButton from '../../components/CustomButton';
-import Input from '../../components/Input';
-import FlatButton  from '../../components/FlatButton';
+import CustomButton from '../../../components/CustomButton';
+import Input from '../../../components/Input';
+import FlatButton  from '../../../components/FlatButton';
 import GoogleIcon from '../../../assets/icons/google-icon.png';
 import AppleIcon from '../../../assets/icons/apple-icon.png'
 import { useNavigation } from '@react-navigation/native';
@@ -130,14 +130,14 @@ export default function Crendentials() {
             <View className='flex flex-col  w-full gap-y-4'>
             <CustomButton
                 title="Google"
-                icon={GoogleIcon}
-                iconStyles="w-[28px] h-[28px]"
+                image={GoogleIcon}
+                imageStyles="w-[28px] h-[28px]"
                 // handlePress={() => router.push("/sign-in")}
                 containerStyles="w-full mt-7 rounded-full bg-primary-200"/>
             <CustomButton
             title="Apple"
-            icon={AppleIcon}
-            iconStyles="w-[36px] h-[36px]"
+            image={AppleIcon}
+            imageStyles="w-[36px] h-[36px]"
             // handlePress={() => router.push("/sign-in")}
             containerStyles="w-full mt-7 rounded-full bg-primary-200"/>
             </View>

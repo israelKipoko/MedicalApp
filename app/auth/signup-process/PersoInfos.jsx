@@ -1,30 +1,30 @@
-import { StyleSheet, Text, View, ScrollView, Button, Pressable, Platform } from 'react-native'
+import { StyleSheet, Text, View, ScrollView, Pressable, Platform } from 'react-native'
 import React,  { useState }  from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
-import CustomButton from '../../components/CustomButton';
-import Input from '../../components/Input';
+import CustomButton from '../../../components/CustomButton';
+import Input from '../../../components/Input';
 import DateTimePicker from '@react-native-community/datetimepicker';
-import ModalDropdown from 'react-native-modal-dropdown';
-import RNPickerSelect from 'react-native-picker-select';
 import { useNavigation } from '@react-navigation/native';
-
+import {Picker} from '@react-native-picker/picker';
 
 const PersoInfos = ({ route }) => { 
   const { email, password } = route.params;
      const [date, setDate] = useState(new Date());
      const [open, setOpen] = useState(false);
+     const [openGenderPicker, setOpenGenderPicker] = useState(false);
      const navigation = useNavigation();
 
     const [name, setName] = useState("");
     const [firstname, setFirstname] = useState("");
     const [surname, setSurname] = useState("");
     const [birthdate, setBirthdate] = useState(date);
-    const [gender, setGender] = useState("");
+    const [gender, setGender] = useState("male");
+    const [genderLabel, setGenderLabel] = useState("Masculin");
     const [nameIsInvalid, setNameIsInvalid] = useState(false);
     const [firstnameIsInvalid, setFirstnameIsInvalid] = useState(false);
     const [surnameIsInvalid, setSurnameIsInvalid] = useState(false);
     const [birthdateIsInvalid, setBirthdateIsInvalid] = useState(false);
-    const [genderIsInvalid, setGenderIsInvalid] = useState('Sexe');
+    const [genderIsInvalid, setGenderIsInvalid] = useState(false);
 
     const formatDate = (rawDate) => {
       let date = new Date(rawDate);
@@ -36,7 +36,7 @@ const PersoInfos = ({ route }) => {
       month = month < 10 ? `0${month}` : month;
       day = day < 10 ? `0${day}` : day;
 
-      return `${day}-${month}-${year}`;
+      return `${year}-${month}-${day}`;
     }
     const changeDate = ({type},selectedDate) => {
       if(type == "set"){
@@ -51,6 +51,15 @@ const PersoInfos = ({ route }) => {
         setOpen(!open);
       }
       
+    }
+    const changeGender = (itemValue, itemIndex) => {
+      setGender(itemValue);
+      if (itemValue === "male") {
+        setGenderLabel("Masculin");
+      }else{
+        setGenderLabel("Féminin");
+      }
+      setOpenGenderPicker(!openGenderPicker);
     }
 
 const consfirmIOSDate = () => {
@@ -155,55 +164,65 @@ const consfirmIOSDate = () => {
                    isInvalid={firstnameIsInvalid}
                     ErrorText={"Ce champ est obligatoire*"}
                    />
-                 <View className="my-2">
-
-                    {!open && (
-                        <Pressable onPress={() => setOpen(!open)}>
-                            <Input
-                            label="Date de naissance"
-                            className="w-full"
-                            value={birthdate}
-                            onUpdateValue={(e) => setBirthdate(e)}
-                            placeholder={'Entrez votre date de naissance'}
-                            isInvalid={birthdateIsInvalid}
-                              ErrorText={"Ce champ est obligatoire*"}
-                              pressIn={() => setOpen(!open)}
-                            />
-                        </Pressable>
-                    )}
-                    
-                    {open && (
-                        <DateTimePicker 
-                        mode='date'
-                        display='spinner'
-                        value={date}
-                        onChange={changeDate}
-                        style={styles.datepicker}
-                        />
-                    )}
-                     {open && Platform.OS === "ios" && (
-                        <View  className='mx-auto'>
-                            <CustomButton
-                              title="Confirmer"
-                              handlePress={consfirmIOSDate}
-                              containerStyles="w-[150px] mt-1 font-bold rounded-full bg-gray-200  "
-                              textStyles={"text-primary-100"}/>
-                        </View>
-                    )}
-                   
-                 </View>
-                 <View className="my-2">
-                    <Text  style={styles.label}>Sexe :</Text>
-                    <View   className='border-primary border h-14 w-full flex items-center justify-center rounded-[8px] px-2 '>
-                        <RNPickerSelect
-                            onValueChange={(e) => setGender(e)}
-                            style={styles.dropdown}
-                            items={[
-                            { label: 'Masculin', value: 'male' },
-                            { label: 'Féminin', value: 'female' },
-                            ]}
-                        />
+                   <View className="my-2">
+                          {!open && (
+                              <Pressable onPress={() => setOpen(!open)}>
+                                  <Input
+                                  label="Date de naissance"
+                                  className="w-full capitalize"
+                                  value={birthdate}
+                                  onUpdateValue={(e) => setBirthdate(e)}
+                                  placeholder={'Entrez votre date de naissance'}
+                                  ErrorText={"Ce champ est obligatoire*"}
+                                  pressIn={() => setOpen(!open)}
+                                  />
+                              </Pressable>
+                          )}
+                          {open && (
+                              <DateTimePicker 
+                              mode='date'
+                              display='spinner'
+                              value={date}
+                              onChange={changeDate}
+                              style={styles.datepicker}
+                              />
+                          )}
+                          {open && Platform.OS === "ios" && (
+                              <View  className=' flex flex-row justify-evenly '>
+                                  <CustomButton
+                                  title="Confirmer"
+                                  handlePress={consfirmIOSDate}
+                                  containerStyles="w-[150px]  font-bold rounded-lg bg-primary-200"/>
+                                  <CustomButton
+                                      title="Annuler"
+                                      handlePress={() => setOpen(false)}
+                                      containerStyles="w-[150px] font-bold  rounded-lg bg-gray-200"
+                                      textStyles={"text-primary-100"}/>
+                              </View>
+                          )}
                     </View>
+                 <View className="my-2">
+                 {!openGenderPicker && (
+                    <Pressable onPress={() => setOpenGenderPicker(!openGenderPicker)}>
+                        <Input
+                        label={"Sexe"}
+                        className="capitalize w-full"
+                        value={genderLabel}
+                        onUpdateValue={(e) => setGender(e)}
+                        isInvalid={genderIsInvalid}
+                          ErrorText={"Ce champ est obligatoire*"}
+                          pressIn={() => setOpenGenderPicker(!openGenderPicker)}
+                        />
+                    </Pressable>
+                  )}
+                    {openGenderPicker && (
+                      <Picker
+                        selectedValue={gender}
+                        onValueChange={changeGender}>
+                        <Picker.Item label="Masculin" value="male" />
+                        <Picker.Item label="Féminin" value="female" />
+                      </Picker>
+                    )}
                  </View>
            </View>
             <CustomButton

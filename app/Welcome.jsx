@@ -3,11 +3,11 @@ import React from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import CustomButton from '../components/CustomButton';
 import { ResizeMode, Video }  from 'expo-av';
-import DoctorPhoto from '../../assets/images/Doctor-photo-1.jpg'
-import DoctorVideo from '../../assets/videos/doctor-1.mp4'
+import DoctorPhoto from '../assets/images/Doctor-photo-1.jpg'
+import DoctorVideo from '../assets/videos/doctor-1.mp4'
 import { useNavigation } from '@react-navigation/native';
 
-const { width, height } = Dimensions.get('window');
+// const { width, height } = Dimensions.get('window');
 
 export default function Welcome() {
     const navigation = useNavigation();
@@ -17,9 +17,9 @@ export default function Welcome() {
         <View className="w-[100vw] h-[100vh] bg-primary-100 opacity-[0.55]" style={styles.backgroundVideo}>
          <Image
          className="h-full w-full"
-        source={DoctorPhoto} 
+        source={require("../assets/images/Doctor-photo-1.jpg")} 
         style={styles.backgroundVideo}
-        resizeMode="cover" shouldPlay isLooping/>
+        resizeMode="cover"/>
          </View>
         <ScrollView className=" "
             contentContainerStyle={{

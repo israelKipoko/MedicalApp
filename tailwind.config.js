@@ -3,6 +3,15 @@ module.exports = {
   content: ["./app/**/*.{js,jsx,ts,tsx}", "./components/**/*.{js,jsx,ts,tsx}"],
   theme: {
     extend: {
+      // boxShadow: {
+      //   primary: {
+      //     shadowColor: 'rgba(0, 0, 0, 0.3)',
+      //     shadowOffset: { width: 0, height: 19 },
+      //     shadowOpacity: 0.3,
+      //     shadowRadius: 38,
+      //     elevation: 5, // Android shadow
+      //   },
+      // },
       colors: {
         primary:  {
           DEFAULT: "#6DB9EF",
@@ -20,7 +29,7 @@ module.exports = {
           200: "#232533",
         },
         gray: {
-          100: "#CDCDE0",
+          DEFAULT: "#CDCDE044",
         },
       },
     },

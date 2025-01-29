@@ -1,17 +1,74 @@
-import { StyleSheet, Text, View, ScrollView, Image, Button   } from 'react-native'
+import { StyleSheet, Text, View, ScrollView } from 'react-native'
+import { useState } from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
-import CustomButton from '../components/CustomButton';
-import Input from '../components/Input';
-import FlatButton  from '../components/FlatButton';
+import CustomButton from '../../components/CustomButton';
+import Input from '../../components/Input';
+import FlatButton  from '../../components/FlatButton';
 import React from 'react'
-import Icon from 'react-native-vector-icons/FontAwesome';
 import GoogleIcon from '../../assets/icons/google-icon.png'
 import AppleIcon from '../../assets/icons/apple-icon.png'
 import { useNavigation } from '@react-navigation/native';
-
+import {signIn} from '../../backend/appwrite';
+import { useGlobalContext } from '../../context/GlobalContect';
 
 export default function Login() {
     const navigation = useNavigation();
+    const {checkLogin} = useGlobalContext();
+
+    const [isSubmitting, setIsSubmitting] = useState(false);
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
+    const [emailIsInvalid, setEmailIsInvalid] = useState(false);
+    const [passwordIsInvalid, setPasswordIsInvalid] = useState(false);
+    const [emailTextError, setEmailTextError] = useState("");
+    const [passwordTextError, setPasswordTextError] = useState("");
+
+    const checkInfos = () => {
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        let emailIsValid = true;
+        let passwordIsValid = true;
+        if (email === "") {
+            setEmailIsInvalid(true);
+            setEmailTextError("Ce champ est obligatoire*");
+            emailIsValid = false;
+          }else if(!emailRegex.test(email)){
+            setEmailIsInvalid(true);
+            setEmailTextError("L'email entré est invalide!");
+            emailIsValid = false;
+          }else{
+            setEmailIsInvalid(false);
+            emailIsValid = true;
+        }
+        if (password === "") {
+            setPasswordIsInvalid(true);
+            setPasswordTextError("Ce champ est obligatoire*");
+            passwordIsValid = false;
+          }else if(password.length < 5) {
+            setPasswordIsInvalid(true);
+            setPasswordTextError("Le mot de passe doit comporter au moins 5 caractères!");
+            passwordIsValid = false;
+          }else{
+            setPasswordIsInvalid(false);
+            passwordIsValid = true;
+          }
+          return (emailIsValid && passwordIsValid);
+    }
+    function submit() {
+          setIsSubmitting(true);
+        const canSubmit = checkInfos();
+        if(canSubmit){
+            signIn(email, password)
+            .then((res) => {
+                setIsSubmitting(false);
+                checkLogin();
+            }).catch((error) => {
+                console.log(error.message)
+                setIsSubmitting(false);
+            })
+        }else{
+            setIsSubmitting(false);
+        }
+    }
   return (
     <SafeAreaView className="px-4 h-full border flex-1 bg-secondary-100">
     <ScrollView className=" h-full"
@@ -32,28 +89,31 @@ export default function Login() {
                     <Input
                         label="Email"
                         className="w-full border"
-                        // onUpdateValue={updateInputValueHandler.bind(this, 'email')}
-                        // value={enteredEmail}
+                        value={email}
+                        onUpdateValue={(e) => setEmail(e)}
                         keyboardType="email-address"
                         placeholder={'Entrez votre email'}
-                        // isInvalid={emailIsInvalid}
+                        isInvalid={emailIsInvalid}
+                        ErrorText={emailTextError}
                         />
                     <Input
                         label="Mot de passe"
                         className="w-full"
-                        // onUpdateValue={updateInputValueHandler.bind(this, 'email')}
-                        // value={enteredEmail}
+                        value={password}
+                        onUpdateValue={(e) => setPassword(e)}
                         secure={true}
                         placeholder={'Entrez votre mot de passe'}
-                        // isInvalid={emailIsInvalid}
+                        isInvalid={passwordIsInvalid}
+                        ErrorText={passwordTextError}
                         />
-                    <FlatButton textStyles="text-left" onPress={() => navigation.navigate('Signup')}>
+                    {/* <FlatButton textStyles="text-left">
                         Mot de passe oublié?
-                    </FlatButton>
+                    </FlatButton> */}
                 </View>
                  <CustomButton
                     title="Se Connecter"
-                    // handlePress={() => navigation.replace('Login')}
+                    handlePress={submit}
+                    isLoading={isSubmitting}
                     containerStyles="w-full mt-4 font-bold rounded-full bg-primary-200 "/>
                 </View>
             </View>
@@ -63,14 +123,14 @@ export default function Login() {
             <View className='flex flex-col  w-full gap-y-4'>
             <CustomButton
                 title="Google"
-                icon={GoogleIcon}
-                iconStyles="w-[28px] h-[28px]"
+                image={GoogleIcon}
+                imageStyles="w-[28px] h-[28px]"
                 // handlePress={() => router.push("/sign-in")}
                 containerStyles="w-full mt-7 rounded-full bg-primary-200"/>
             <CustomButton
             title="Apple"
-            icon={AppleIcon}
-            iconStyles="w-[36px] h-[36px]"
+            image={AppleIcon}
+            imageStyles="w-[36px] h-[36px]"
             // handlePress={() => router.push("/sign-in")}
             containerStyles="w-full mt-7 rounded-full bg-primary-200"/>
             </View>
